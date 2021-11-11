@@ -4,11 +4,12 @@ class PostsController < ApplicationController
   before_action :authorize_user!, only: %i[ edit update destroy]
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.posted
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+    commontator_thread_show(@post)
   end
 
   # GET /posts/new
@@ -49,8 +50,7 @@ class PostsController < ApplicationController
   end
 
   # DELETE /posts/1 or /posts/1.json
-  def de
-stroy
+  def destroy
     @post.destroy
     respond_to do |format|
       format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
@@ -66,7 +66,7 @@ stroy
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :body)
+      params.require(:post).permit(:title, :body, :schedueled_for)
     end
   def authorize_user!
     redirect_back fallback_location: root_path, alert: 'Nimate dostopa do te strani.' unless current_user == @post.user
